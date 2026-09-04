@@ -52,6 +52,7 @@ export interface OrderConfirmation {
   customer: OrderAddress;
   estimatedDelivery: string;
   paymentMethod: string;
+  paymentScreenshot?: string;
 }
 
 export interface ReviewItem {
