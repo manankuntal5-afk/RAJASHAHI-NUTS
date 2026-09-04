@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient: Warm rustic table -->
+    <linearGradient id="woodBgKishmish" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2d1c13"/>
+      <stop offset="35%" stop-color="#4a2e1b"/>
+      <stop offset="70%" stop-color="#3b2314"/>
+      <stop offset="100%" stop-color="#1f1109"/>
+    </linearGradient>
+
+    <!-- Warm ambient light -->
+    <radialGradient id="warmGlowKishmish" cx="25%" cy="20%" r="65%">
+      <stop offset="0%" stop-color="#ffd599" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#7a4722" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5"/>
+    </radialGradient>
+
+    <!-- Pouch Clip Path -->
+    <clipPath id="kishmishPouchClip">
+      <path d="M 170 110 L 430 110 Q 435 240 445 450 Q 448 500 420 515 Q 300 525 180 515 Q 152 500 155 450 Q 165 240 170 110 Z"/>
+    </clipPath>
+
+    <!-- Plastic Highlights Gradient -->
+    <linearGradient id="pouchGlareKishmish" x1="0%" y1="0%" x2="100%" y2="20%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25"/>
+      <stop offset="15%" stop-color="#ffffff" stop-opacity="0.05"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="75%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="90%" stop-color="#ffffff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
+    </linearGradient>
+
+    <filter id="pouchShadowKishmish" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-opacity="0.6" flood-color="#050302"/>
+    </filter>
+    <filter id="labelShadowKishmish" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.28" flood-color="#1c1106"/>
+    </filter>
+  </defs>
+
+  <!-- Tabletop & Wall Background -->
+  <rect width="600" height="600" fill="url(#woodBgKishmish)"/>
+  <rect width="600" height="600" fill="url(#warmGlowKishmish)"/>
+
+  <!-- Rustic Wood Planks Subtle Lines -->
+  <line x1="0" y1="480" x2="600" y2="480" stroke="#1f120a" stroke-width="3" opacity="0.6"/>
+  <line x1="0" y1="360" x2="600" y2="360" stroke="#1f120a" stroke-width="2" opacity="0.4"/>
+  <line x1="0" y1="240" x2="600" y2="240" stroke="#1f120a" stroke-width="2" opacity="0.3"/>
+
+  <!-- Burlap Mat Behind Pouch -->
+  <path d="M 120 530 L 480 530 L 460 550 L 140 550 Z" fill="#8c6239" opacity="0.35"/>
+  <ellipse cx="300" cy="525" rx="170" ry="22" fill="#0c0704" opacity="0.6" filter="blur(8px)"/>
+
+  <!-- Small Ceramic Bowl of Golden Raisins in Background (Left) -->
+  <g transform="translate(105, 410)">
+    <ellipse cx="0" cy="20" rx="45" ry="12" fill="#140b06" opacity="0.5"/>
+    <ellipse cx="0" cy="10" rx="42" ry="16" fill="#8b5a2b" stroke="#dfba5d" stroke-width="1"/>
+    <ellipse cx="-10" cy="7" rx="11" ry="6" fill="#b07d2b"/>
+    <ellipse cx="8" cy="8" rx="12" ry="5" fill="#c48e35"/>
+    <ellipse cx="0" cy="9" rx="11" ry="6" fill="#d99f41"/>
+  </g>
+
+  <!-- ================= STAND-UP TRANSPARENT POUCH ================= -->
+  <g filter="url(#pouchShadowKishmish)">
+    <!-- Pouch Body Outer (Transparent Film) -->
+    <path d="M 170 110 L 430 110 Q 435 240 445 450 Q 448 500 420 515 Q 300 525 180 515 Q 152 500 155 450 Q 165 240 170 110 Z"
+          fill="#3b2010" stroke="#fce2a6" stroke-width="2" stroke-opacity="0.4"/>
+
+    <!-- High-Resolution Real Raisins Texture Inside Transparent Pouch -->
+    <g clip-path="url(#kishmishPouchClip)">
+      <image href="https://images.unsplash.com/photo-1582293041079-7814c2f12063?q=85&amp;w=800&amp;auto=format&amp;fit=crop"
+             x="140" y="90" width="320" height="440" preserveAspectRatio="xMidYMid slice"/>
+      <!-- Internal plastic depth overlay -->
+      <rect x="140" y="90" width="320" height="440" fill="#3a220e" opacity="0.12"/>
+    </g>
+
+    <!-- Side Heat Seals -->
+    <path d="M 170 110 L 155 450" stroke="#ffffff" stroke-width="6" stroke-opacity="0.25" fill="none"/>
+    <path d="M 430 110 L 445 450" stroke="#ffffff" stroke-width="6" stroke-opacity="0.25" fill="none"/>
+
+    <!-- Top Zipper Header Area -->
+    <rect x="168" y="75" width="264" height="35" rx="3" fill="#ffffff" fill-opacity="0.18" stroke="#ffffff" stroke-opacity="0.3"/>
+    <!-- Heat Seal Ridges on Top -->
+    <line x1="175" y1="84" x2="425" y2="84" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="4,2"/>
+    <line x1="175" y1="92" x2="425" y2="92" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="4,2"/>
+    <line x1="175" y1="102" x2="425" y2="102" stroke="#ffffff" stroke-width="2" stroke-opacity="0.5"/>
+    
+    <!-- Hang hole / Sombrero notch -->
+    <ellipse cx="300" cy="85" rx="14" ry="4" fill="#1f1109" opacity="0.6"/>
+
+    <!-- Side Tear Notches -->
+    <polygon points="166,97 172,94 172,100" fill="#2a180e"/>
+    <polygon points="434,97 428,94 428,100" fill="#2a180e"/>
+
+    <!-- Plastic Sheen Glare across pouch -->
+    <path d="M 170 110 L 430 110 Q 435 240 445 450 Q 448 500 420 515 Q 300 525 180 515 Q 152 500 155 450 Q 165 240 170 110 Z"
+          fill="url(#pouchGlareKishmish)" pointer-events="none"/>
+    <path d="M 185 130 Q 195 280 205 480" stroke="#ffffff" stroke-width="3" stroke-opacity="0.35" fill="none"/>
+
+    <!-- Bottom Gusset Fold Line -->
+    <path d="M 180 485 Q 300 505 420 485" stroke="#ffffff" stroke-width="2" stroke-opacity="0.3" fill="none"/>
+  </g>
+
+  <!-- ================= RAJSHAHI NUTS FRONT LABEL ================= -->
+  <!-- Centered on transparent pouch exactly matching user's uploaded kismis.png -->
+  <g transform="translate(195, 230)" filter="url(#labelShadowKishmish)">
+    <!-- Crisp White Label Background -->
+    <rect width="210" height="135" rx="4" fill="#ffffff" stroke="#dcd6cb" stroke-width="1"/>
+    
+    <!-- Outer thin border -->
+    <rect x="4" y="4" width="202" height="127" rx="2" fill="none" stroke="#e8e2d8" stroke-width="0.8"/>
+
+    <!-- Brand Name: Rajshahi Nuts -->
+    <text x="105" y="32" font-family="'Cinzel', Arial, sans-serif" font-size="20" font-weight="900" fill="#111827" text-anchor="middle" letter-spacing="0.5">
+      Rajshahi Nuts
+    </text>
+
+    <!-- 1 कि.ग्रा. (Hindi 1 kg) -->
+    <text x="105" y="67" font-family="'Noto Sans Devanagari', Arial, sans-serif" font-size="25" font-weight="900" fill="#111827" text-anchor="middle">
+      1 कि.ग्रा.
+    </text>
+
+    <!-- Horizontal Divider Line -->
+    <line x1="28" y1="78" x2="182" y2="78" stroke="#111827" stroke-width="2"/>
+
+    <!-- KISHMISH (RAISINS) -->
+    <text x="105" y="101" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#111827" text-anchor="middle" letter-spacing="0.5">
+      KISHMISH (RAISINS)
+    </text>
+
+    <!-- 1 KG -->
+    <text x="105" y="122" font-family="Arial, sans-serif" font-size="14" font-weight="900" fill="#111827" text-anchor="middle" letter-spacing="1">
+      1 KG
+    </text>
+  </g>
+
+  <!-- Top-Right Golden Premium Badge -->
+  <g transform="translate(485, 95)">
+    <circle cx="0" cy="0" r="38" fill="#0b2e1e" stroke="#dfba5d" stroke-width="2.5"/>
+    <circle cx="0" cy="0" r="34" fill="none" stroke="#dfba5d" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="0" y="-12" font-family="sans-serif" font-size="9" font-weight="900" fill="#fae69e" text-anchor="middle">100% PURE</text>
+    <text x="0" y="6" font-family="'Cinzel', serif" font-size="14" font-weight="900" fill="#ffd700" text-anchor="middle">1 KG</text>
+    <text x="0" y="20" font-family="sans-serif" font-size="8" font-weight="800" fill="#ffffff" text-anchor="middle">KISHMISH</text>
+  </g>
+
+  <!-- Bottom Floating Name Tag -->
+  <g transform="translate(300, 565)">
+    <rect x="-70" y="-14" width="140" height="28" rx="14" fill="#082218" stroke="#dfba5d" stroke-width="2"/>
+    <text x="0" y="4" font-family="'Cinzel', sans-serif" font-size="13" font-weight="900" fill="#fae69e" text-anchor="middle" letter-spacing="1">
+      kishmish
+    </text>
+  </g>
+</svg>

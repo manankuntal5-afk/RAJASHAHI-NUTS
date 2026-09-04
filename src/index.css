@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Cinzel', serif;
+    --font-hindi: 'Tiro Devanagari Hindi', 'Poppins', sans-serif;
+    --font-rozha: 'Rozha One', serif;
+  }
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+.font-hindi {
+  font-family: 'Tiro Devanagari Hindi', 'Poppins', sans-serif;
+}
+
+.font-rozha {
+  font-family: 'Rozha One', serif;
+}
+
+/* Gold Gradient Effects */
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #dfba5d 0%, #fae69e 50%, #b8860b 100%);
+}
+
+.bg-emerald-gradient {
+  background: linear-gradient(180deg, #093926 0%, #052116 100%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #fbe8a6 0%, #e2be67 50%, #c59728 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-gold-gradient {
+  border-image: linear-gradient(135deg, #fae69e, #c59728, #fae69e) 1;
+}
+
+/* Custom glow animation */
+@keyframes pulse-gold {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(223, 186, 93, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(223, 186, 93, 0.7);
+  }
+}
+
+.animate-pulse-gold {
+  animation: pulse-gold 2.5s infinite;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
