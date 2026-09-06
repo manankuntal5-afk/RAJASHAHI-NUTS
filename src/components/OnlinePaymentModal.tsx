@@ -62,11 +62,16 @@ export const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
 
   const [addressErrors, setAddressErrors] = useState<{ [key: string]: string }>({});
 
-  // Exactly 2 payment options: QR code or UPI ID
-  const [method, setMethod] = useState<'qr' | 'upi'>('qr');
+  // Exactly 2 payment options: QR code or UPI ID. Default null so QR doesn't show initially
+  const [method, setMethod] = useState<'qr' | 'upi' | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [copiedUpi, setCopiedUpi] = useState<boolean>(false);
   const [timerSeconds, setTimerSeconds] = useState<number>(300); // 5 minutes payment countdown
+
+  // 14-Second payment verification states
+  const [isVerifying10s, setIsVerifying10s] = useState<boolean>(false);
+  const [verifyCountdown, setVerifyCountdown] = useState<number>(14);
+  const [hasVerificationFailed, setHasVerificationFailed] = useState<boolean>(false);
 
   // Payment screenshot upload state
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
@@ -301,6 +306,40 @@ export const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
     return () => clearInterval(timer);
   }, []);
 
+  // 10-second payment verification effect
+  useEffect(() => {
+    let timer: any;
+    if (isVerifying10s && verifyCountdown > 0) {
+      timer = setTimeout(() => {
+        setVerifyCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (isVerifying10s && verifyCountdown === 0) {
+      setIsVerifying10s(false);
+      setHasVerificationFailed(true);
+      setTimeout(() => {
+        const target = document.getElementById('payment-not-received-alert');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+    return () => clearTimeout(timer);
+  }, [isVerifying10s, verifyCountdown]);
+
+  const handleStart10sVerification = () => {
+    setIsVerifying10s(true);
+    setVerifyCountdown(14);
+  };
+
+  const formatTimeParts = (sec: number) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return {
+      minutes: String(m).padStart(2, '0'),
+      seconds: String(s).padStart(2, '0')
+    };
+  };
+
   const formatTime = (sec: number) => {
     const m = Math.floor(sec / 60);
     const s = sec % 60;
@@ -358,6 +397,7 @@ export const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
     }
     setScreenshotError('');
     setScreenshotName(file.name);
+    setHasVerificationFailed(true);
     const reader = new FileReader();
     reader.onload = () => {
       setScreenshotPreview(reader.result as string);
@@ -668,115 +708,61 @@ export const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
               </div>
             </div>
 
-            {/* Strict Online Only Notice & Timer */}
-            <div className="bg-[#241306] border border-[#f59e0b]/50 rounded-xl p-3 mb-4 flex items-center justify-between text-xs text-[#fed7aa]">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-[#f59e0b] shrink-0" />
-                <span><strong>Promotional Online Price:</strong> ₹{totalAmount} offer valid for instant digital checkout.</span>
-              </div>
-              <div className="flex items-center gap-1 font-mono text-[#fef08a] shrink-0 ml-2">
-                <Clock className="w-3.5 h-3.5" />
-                <span>{formatTime(timerSeconds)}</span>
-              </div>
-            </div>
-
-            {/* Beautiful Blinking Warning Banner */}
-            <div className="relative overflow-hidden rounded-2xl border-2 border-amber-400 bg-gradient-to-r from-[#2c1502] via-[#482204] to-[#2c1502] p-3 sm:p-3.5 mb-5 shadow-[0_0_30px_rgba(245,158,11,0.45)] animate-pulse">
-              <div className="flex items-center justify-center gap-2.5 text-center">
-                <span className="relative flex h-3.5 w-3.5 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-90"></span>
-                  <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
-                </span>
-                <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300 shrink-0" />
-                <p className="text-xs sm:text-sm font-black text-[#fef08a] tracking-wide uppercase drop-shadow">
-                  ⚠️ PLEASE UPLOAD PAYMENT SCREENSHOT TO CONFIRM ORDER
-                </p>
-                <span className="hidden sm:inline-block text-[10px] bg-amber-400 text-[#2c1502] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow">
-                  Required
-                </span>
-              </div>
-            </div>
-
-            {/* Step-by-Step Customer Guide with Modern Glowing Icons */}
-            <div className="bg-[#051c12] border border-[#dfba5d]/40 rounded-2xl p-3.5 sm:p-4 mb-5 shadow-lg">
-              <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                  </span>
-                  <h4 className="font-bold text-[#fae69e] text-xs sm:text-sm">
-                    How to Complete Payment &amp; Confirm Order:
-                  </h4>
-                </div>
-                <span className="text-[10px] text-gray-300 bg-black/50 px-2.5 py-0.5 rounded-full border border-white/10 font-semibold">
-                  3 Easy Steps
-                </span>
-              </div>
-
-              {/* 3 Modern Step Cards with Compact Icons */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                {/* Step 1 */}
-                <div className="bg-gradient-to-b from-[#061e14] to-[#04140d] border border-[#dfba5d]/40 hover:border-[#dfba5d] rounded-xl p-2.5 flex items-start gap-2.5 transition-all shadow">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#dfba5d] to-[#b38920] text-[#05170f] flex items-center justify-center shrink-0 shadow relative">
-                    <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#05170f]" />
-                    <span className="absolute -top-1 -right-1 bg-[#05170f] text-[#fae69e] border border-[#dfba5d] text-[8px] font-black px-1 rounded-full shadow">
-                      01
-                    </span>
+            {/* Stylish Modern Countdown Timer */}
+            {(() => {
+              const { minutes, seconds } = formatTimeParts(timerSeconds);
+              return (
+                <div className="bg-gradient-to-r from-[#0b2819] via-[#051810] to-[#0b2819] border border-[#dfba5d]/50 rounded-2xl p-3 sm:p-3.5 mb-4 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="relative flex h-3 w-3 shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                    </div>
+                    <div>
+                      <span className="text-xs sm:text-sm font-bold text-white block">
+                        Special Online Price: <span className="text-[#fae69e] font-black">₹{totalAmount}</span> Locked
+                      </span>
+                      <span className="text-[11px] text-gray-300">
+                        Complete payment before countdown expires
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <strong className="text-white block text-xs font-bold">1. Pay ₹{totalAmount}</strong>
-                    <p className="text-[11px] text-gray-300 leading-snug mt-0.5">
-                      Scan QR or tap PhonePe / GPay to pay ₹{totalAmount}.
-                    </p>
+
+                  <div className="flex items-center justify-between sm:justify-end gap-2.5 bg-[#020d08] px-3.5 py-1.5 rounded-xl border border-[#dfba5d]/60 shadow-inner">
+                    <div className="flex items-center gap-1.5 text-xs text-[#fae69e] font-semibold">
+                      <Clock className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                      <span className="text-[11px] text-gray-400">Offer Expires In:</span>
+                    </div>
+                    <div className="flex items-center gap-1 font-mono font-black text-sm sm:text-base">
+                      <span className="bg-[#0b2b1d] text-[#fae69e] px-2 py-0.5 rounded-lg border border-[#dfba5d]/30 shadow">
+                        {minutes}
+                      </span>
+                      <span className="text-amber-400 animate-pulse">:</span>
+                      <span className="bg-[#0b2b1d] text-[#fae69e] px-2 py-0.5 rounded-lg border border-[#dfba5d]/30 shadow">
+                        {seconds}
+                      </span>
+                    </div>
                   </div>
                 </div>
+              );
+            })()}
 
-                {/* Step 2 */}
-                <div className="bg-gradient-to-b from-[#061e14] to-[#04140d] border border-sky-500/40 hover:border-sky-400 rounded-xl p-2.5 flex items-start gap-2.5 transition-all shadow">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#38bdf8] to-[#0284c7] text-white flex items-center justify-center shrink-0 shadow relative">
-                    <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
-                    <span className="absolute -top-1 -right-1 bg-[#05170f] text-[#38bdf8] border border-[#38bdf8] text-[8px] font-black px-1 rounded-full shadow">
-                      02
-                    </span>
-                  </div>
-                  <div>
-                    <strong className="text-white block text-xs font-bold">2. Take Screenshot 📸</strong>
-                    <p className="text-[11px] text-gray-300 leading-snug mt-0.5">
-                      Take screenshot of payment success screen.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 3 */}
-                <div className="bg-gradient-to-b from-[#061e14] to-[#04140d] border border-emerald-500/40 hover:border-emerald-400 rounded-xl p-2.5 flex items-start gap-2.5 transition-all shadow">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#10b981] to-[#059669] text-white flex items-center justify-center shrink-0 shadow relative">
-                    <UploadCloud className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
-                    <span className="absolute -top-1 -right-1 bg-[#05170f] text-[#10b981] border border-[#10b981] text-[8px] font-black px-1 rounded-full shadow">
-                      03
-                    </span>
-                  </div>
-                  <div>
-                    <strong className="text-white block text-xs font-bold">3. Upload &amp; Confirm</strong>
-                    <p className="text-[11px] text-gray-300 leading-snug mt-0.5">
-                      Upload screenshot below &amp; confirm order.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Exactly 2 Payment Options: QR Code or UPI ID */}
+            {/* Select Payment Option: QR Code or UPI ID */}
             <div className="mb-4">
-              <label className="block text-xs font-bold text-[#fae69e] mb-2">
-                Select Payment Option:
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-bold text-[#fae69e] flex items-center gap-1.5">
+                  <span>Select Payment Option:</span>
+                </label>
+                <span className="text-[10px] text-emerald-400 bg-emerald-950/70 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">
+                  Tap option to view
+                </span>
+              </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   id="tab-qr-payment"
-                  onClick={() => setMethod('qr')}
+                  onClick={() => setMethod(prev => prev === 'qr' ? null : 'qr')}
                   className={`cursor-pointer p-3 sm:p-3.5 rounded-2xl border-2 text-center transition-all flex flex-col items-center gap-1.5 ${
                     method === 'qr'
                       ? 'bg-[#0f3d27] border-[#dfba5d] text-[#fae69e] ring-2 ring-[#dfba5d]/40 shadow-lg font-bold'
@@ -787,13 +773,15 @@ export const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
                     <QrCode className="w-5 h-5 text-white" />
                   </div>
                   <span className="text-xs sm:text-sm font-bold leading-tight">1. Pay via QR Code</span>
-                  <span className="text-[10px] text-gray-400">Scan &amp; Pay ₹{totalAmount}</span>
+                  <span className="text-[10px] text-gray-400">
+                    {method === 'qr' ? '▲ Tap to Hide QR' : `▼ Tap to View QR (₹${totalAmount})`}
+                  </span>
                 </button>
 
                 <button
                   type="button"
                   id="tab-upi-payment"
-                  onClick={() => setMethod('upi')}
+                  onClick={() => setMethod(prev => prev === 'upi' ? null : 'upi')}
                   className={`cursor-pointer p-3 sm:p-3.5 rounded-2xl border-2 text-center transition-all flex flex-col items-center gap-1.5 ${
                     method === 'upi'
                       ? 'bg-[#0f3d27] border-[#dfba5d] text-[#fae69e] ring-2 ring-[#dfba5d]/40 shadow-lg font-bold'
@@ -804,7 +792,9 @@ export const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
                     <Smartphone className="w-5 h-5" />
                   </div>
                   <span className="text-xs sm:text-sm font-bold leading-tight">2. Pay via UPI ID</span>
-                  <span className="text-[10px] text-gray-400">{PHONEPE_UPI_ID}</span>
+                  <span className="text-[10px] text-gray-400">
+                    {method === 'upi' ? '▲ Tap to Hide ID' : '▼ Tap to View UPI ID'}
+                  </span>
                 </button>
               </div>
             </div>
@@ -1005,173 +995,259 @@ export const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
               </div>
             )}
 
-            {/* Step 3: Pop-Up Style Eye-Catching Payment Screenshot Upload Section */}
-            <div className="relative bg-gradient-to-b from-[#0e3b26] via-[#072418] to-[#04150d] border-2 border-[#f5d061] rounded-3xl p-5 sm:p-7 mb-6 shadow-[0_12px_40px_rgba(223,186,93,0.35)] ring-4 ring-[#dfba5d]/25 transition-all">
-              {/* Floating Top Beacon Badge */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-4 border-b border-[#dfba5d]/30">
-                <div className="inline-flex items-center gap-2 bg-[#f5d061] text-[#05170f] px-3.5 py-1.5 rounded-full font-black text-xs uppercase tracking-wider shadow-md">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-600 opacity-90"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600"></span>
-                  </span>
-                  <Camera className="w-4 h-4 text-[#05170f]" />
-                  <span>Final Step: Upload Payment Screenshot</span>
+            {/* 10-Second Bank Processing State */}
+            {isVerifying10s && (
+              <div className="my-5 p-5 sm:p-7 rounded-3xl bg-gradient-to-b from-[#092b1d] via-[#061e14] to-[#04140d] border-2 border-[#dfba5d] text-center shadow-2xl animate-fadeIn">
+                <div className="relative w-16 h-16 mx-auto mb-3">
+                  <div className="absolute inset-0 rounded-full border-4 border-[#dfba5d]/30 animate-ping"></div>
+                  <div className="w-16 h-16 rounded-full border-4 border-t-emerald-400 border-r-[#dfba5d] border-b-transparent border-l-transparent animate-spin flex items-center justify-center bg-black/40">
+                    <Sparkles className="w-6 h-6 text-[#fae69e]" />
+                  </div>
                 </div>
-                <span className="text-[11px] bg-[#10b981]/20 text-[#6ee7b7] border border-[#10b981]/40 px-2.5 py-1 rounded-full font-bold">
-                  ✓ Instant Order Confirmation
+
+                <span className="inline-block bg-emerald-950 text-emerald-300 border border-emerald-500/50 text-[11px] font-bold px-3.5 py-1 rounded-full mb-2 uppercase tracking-wider shadow">
+                  Verifying with Bank / UPI Gateway
                 </span>
+
+                <h4 className="text-base sm:text-lg font-black text-white mb-1">
+                  Checking Payment Status for ₹{totalAmount}...
+                </h4>
+                <p className="text-xs text-gray-300 max-w-md mx-auto mb-4 leading-relaxed">
+                  PhonePe / Bank Server से आपके पेमेंट की पुष्टि की जा रही है। कृपया प्रतीक्षा करें...
+                </p>
+
+                {/* Progress bar and real-time countdown */}
+                <div className="max-w-xs mx-auto">
+                  <div className="w-full bg-[#031109] rounded-full h-3 border border-white/15 overflow-hidden mb-2 shadow-inner">
+                    <div
+                      className="bg-gradient-to-r from-emerald-500 via-[#fae69e] to-emerald-400 h-3 rounded-full transition-all duration-1000"
+                      style={{ width: `${((14 - verifyCountdown) / 14) * 100}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] text-gray-300 font-mono">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-[#dfba5d] animate-spin" />
+                      <span>Verifying...</span>
+                    </span>
+                    <span className="text-[#fae69e] font-black text-xs">{verifyCountdown}s remaining</span>
+                  </div>
+                </div>
               </div>
+            )}
 
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    handleScreenshotChange(e.target.files[0]);
-                  }
-                }}
-                className="hidden"
-                id="payment-screenshot-input"
-              />
-
-              {!screenshotPreview ? (
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                      handleScreenshotChange(e.dataTransfer.files[0]);
-                    }
-                  }}
-                  className="cursor-pointer flex flex-col items-center justify-center py-4 px-3 text-center group bg-[#061f14]/60 border-2 border-dashed border-[#dfba5d]/60 hover:border-[#f5d061] rounded-2xl transition-all hover:bg-[#072418]"
-                >
-                  <div className="relative mb-3">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#124b30] to-[#0a2719] border-2 border-[#dfba5d] flex items-center justify-center text-[#dfba5d] shadow-[0_0_25px_rgba(223,186,93,0.35)] group-hover:scale-110 transition-transform">
-                      <Camera className="w-8 h-8 text-[#fae69e]" />
+            {/* Initial Flow: Green Bouncing "Pay ₹... to Confirm Order" Button */}
+            {!hasVerificationFailed && !isVerifying10s && (
+              <div className="pt-3 pb-2">
+                <div className="animate-bounce">
+                  <button
+                    type="button"
+                    id="pay-confirm-order-green-btn"
+                    onClick={handleStart10sVerification}
+                    className="cursor-pointer w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:from-emerald-400 hover:to-green-500 active:scale-98 text-white font-black text-base sm:text-lg shadow-[0_12px_35px_rgba(16,185,129,0.55)] border-2 border-emerald-300/80 flex flex-col items-center justify-center transition-all"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                      <span className="tracking-wide">Pay ₹{totalAmount} to Confirm Order</span>
                     </div>
-                    <span className="absolute -bottom-1 -right-1 bg-[#dfba5d] text-[#05170f] p-1.5 rounded-full shadow-lg">
-                      <Sparkles className="w-3.5 h-3.5" />
+                    <span className="text-xs text-emerald-100 font-semibold mt-0.5">
+                      पे {totalAmount} रूपये टु कन्फर्म ऑर्डर
+                    </span>
+                  </button>
+                </div>
+
+                <p className="text-center text-[11px] text-gray-400 mt-3 flex items-center justify-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#10b981]" />
+                  <span>100% Safe &amp; Secure • Instant booking with SMS &amp; Invoice confirmation</span>
+                </p>
+              </div>
+            )}
+
+            {/* After 10s Processing: Show Failure Alert, Screenshot Upload, & Confirm Button */}
+            {hasVerificationFailed && (
+              <div className="animate-fadeIn">
+                {/* Stylish Alert: Not Received Your Payment */}
+                <div
+                  id="payment-not-received-alert"
+                  className="bg-gradient-to-b from-[#2d0e0e] via-[#1c0808] to-[#140606] border-2 border-red-500/90 rounded-3xl p-4 sm:p-5 mb-5 shadow-[0_0_35px_rgba(239,68,68,0.4)] text-center animate-fadeIn"
+                >
+                  <div className="w-12 h-12 rounded-full bg-red-500/20 border-2 border-red-400 flex items-center justify-center mx-auto mb-2 text-red-400 shadow">
+                    <AlertTriangle className="w-6 h-6 text-red-400 animate-pulse" />
+                  </div>
+                  <span className="inline-block bg-red-600 text-white text-[10px] font-black uppercase tracking-wider px-3.5 py-0.5 rounded-full mb-1.5 shadow">
+                    Automatic Verification Incomplete
+                  </span>
+                  <h3 className="text-base sm:text-lg font-black text-red-300 tracking-wide mb-1">
+                    Not Received Your Payment, Please Upload Your Payment Screenshot
+                  </h3>
+                  <p className="text-xs text-gray-200 max-w-md mx-auto leading-relaxed">
+                    नोट रिसीव योर पेमेंट! कृपया नीचे दिए गए बॉक्स में अपने पेमेंट का <strong>स्क्रीनशॉट अपलोड करें</strong> ताकि आपका ऑर्डर तुरंत कन्फर्म हो सके।
+                  </p>
+                </div>
+
+                {/* Screenshot Upload Section */}
+                <div className="relative bg-gradient-to-b from-[#0e3b26] via-[#072418] to-[#04150d] border-2 border-[#f5d061] rounded-3xl p-5 sm:p-7 mb-5 shadow-[0_12px_40px_rgba(223,186,93,0.35)] ring-4 ring-[#dfba5d]/25 transition-all">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 mb-4 border-b border-[#dfba5d]/30">
+                    <div className="inline-flex items-center gap-2 bg-[#f5d061] text-[#05170f] px-3.5 py-1.5 rounded-full font-black text-xs uppercase tracking-wider shadow-md">
+                      <Camera className="w-4 h-4 text-[#05170f]" />
+                      <span>Upload Payment Screenshot</span>
+                    </div>
+                    <span className="text-[11px] bg-[#10b981]/20 text-[#6ee7b7] border border-[#10b981]/40 px-2.5 py-1 rounded-full font-bold">
+                      Required to Confirm Order
                     </span>
                   </div>
 
-                  <h4 className="font-black text-white text-base sm:text-lg mb-1 tracking-wide">
-                    Upload Payment Receipt Screenshot <span className="text-red-400">*</span>
-                  </h4>
-                  <p className="text-xs text-gray-300 max-w-md mx-auto mb-4 leading-relaxed">
-                    Payment complete ho gaya? Apne phone gallery se payment receipt screenshot yahan upload karein taaki aapka order turant confirm ho sake.
-                  </p>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        handleScreenshotChange(e.target.files[0]);
+                      }
+                    }}
+                    className="hidden"
+                    id="payment-screenshot-input"
+                  />
 
-                  {/* Eye-Catching Ultra-Stylish Golden Button */}
-                  <div className="relative group/btn inline-block w-full sm:w-auto">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-[#fae69e] via-[#dfba5d] to-[#c59b27] rounded-2xl blur opacity-75 group-hover/btn:opacity-100 transition duration-300 animate-pulse"></div>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        fileInputRef.current?.click();
+                  {!screenshotPreview ? (
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                          handleScreenshotChange(e.dataTransfer.files[0]);
+                        }
                       }}
-                      className="relative w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-[#fae69e] via-[#dfba5d] to-[#c59b27] hover:brightness-110 active:scale-95 text-[#05170f] font-black text-sm sm:text-base shadow-2xl flex items-center justify-center gap-3 transition-all ring-2 ring-white/60 cursor-pointer"
+                      className="cursor-pointer flex flex-col items-center justify-center py-5 px-3 text-center group bg-[#061f14]/60 border-2 border-dashed border-[#dfba5d]/60 hover:border-[#f5d061] rounded-2xl transition-all hover:bg-[#072418]"
                     >
-                      <div className="w-7 h-7 rounded-lg bg-[#05170f] text-[#fae69e] flex items-center justify-center shadow">
-                        <ImageIcon className="w-4 h-4 text-[#fae69e]" />
+                      <div className="relative mb-3">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#124b30] to-[#0a2719] border-2 border-[#dfba5d] flex items-center justify-center text-[#dfba5d] shadow-[0_0_25px_rgba(223,186,93,0.35)] group-hover:scale-110 transition-transform">
+                          <Camera className="w-8 h-8 text-[#fae69e]" />
+                        </div>
+                        <span className="absolute -bottom-1 -right-1 bg-[#dfba5d] text-[#05170f] p-1.5 rounded-full shadow-lg">
+                          <Sparkles className="w-3.5 h-3.5" />
+                        </span>
                       </div>
-                      <span className="tracking-wide">CHOOSE FROM GALLERY / PHOTOS</span>
-                    </button>
-                  </div>
 
-                  <span className="text-xs text-[#fae69e] font-semibold mt-3 flex items-center gap-1.5">
-                    👆 Click above to select screenshot from your phone gallery
-                  </span>
+                      <h4 className="font-black text-white text-base sm:text-lg mb-1 tracking-wide">
+                        Upload Payment Receipt Screenshot <span className="text-red-400">*</span>
+                      </h4>
+                      <p className="text-xs text-gray-300 max-w-md mx-auto mb-4 leading-relaxed">
+                        अपने फोन गैलरी से PhonePe / GPay / Paytm पेमेंट रसीद का स्क्रीनशॉट यहाँ अपलोड करें।
+                      </p>
 
-                  <div className="flex items-center gap-3 mt-3 text-[11px] text-gray-400">
-                    <span>✓ JPG, PNG, WebP</span>
-                    <span>•</span>
-                    <span>Max 15MB</span>
-                    <span>•</span>
-                    <span className="text-emerald-400 font-bold">100% Safe Verification</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center text-center py-2">
-                  <div className="relative mb-3">
-                    <img
-                      src={screenshotPreview}
-                      alt="Payment Receipt Preview"
-                      className="max-h-56 max-w-full rounded-2xl border-2 border-emerald-400 shadow-2xl object-contain bg-black/70 p-1"
-                    />
-                    <div className="absolute top-3 right-3 bg-emerald-500 text-[#05170f] px-3 py-1 rounded-full text-xs font-black flex items-center gap-1.5 shadow-xl">
-                      <CheckCircle2 className="w-4 h-4 text-[#05170f]" />
-                      <span>Screenshot Attached ✓</span>
+                      {/* Eye-Catching Golden Button to Pick File */}
+                      <div className="relative group/btn inline-block w-full sm:w-auto">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-[#fae69e] via-[#dfba5d] to-[#c59b27] rounded-2xl blur opacity-75 group-hover/btn:opacity-100 transition duration-300 animate-pulse"></div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            fileInputRef.current?.click();
+                          }}
+                          className="relative w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#fae69e] via-[#dfba5d] to-[#c59b27] hover:brightness-110 active:scale-95 text-[#05170f] font-black text-sm sm:text-base shadow-2xl flex items-center justify-center gap-3 transition-all ring-2 ring-white/60 cursor-pointer"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-[#05170f] text-[#fae69e] flex items-center justify-center shadow">
+                            <ImageIcon className="w-4 h-4 text-[#fae69e]" />
+                          </div>
+                          <span className="tracking-wide">CHOOSE FROM GALLERY / PHOTOS</span>
+                        </button>
+                      </div>
+
+                      <span className="text-xs text-[#fae69e] font-semibold mt-3 flex items-center gap-1.5">
+                        👆 Click above to select screenshot from your phone gallery
+                      </span>
+
+                      <div className="flex items-center gap-3 mt-3 text-[11px] text-gray-400">
+                        <span>✓ JPG, PNG, WebP</span>
+                        <span>•</span>
+                        <span>Max 15MB</span>
+                        <span>•</span>
+                        <span className="text-emerald-400 font-bold">100% Safe Verification</span>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-center py-2">
+                      <div className="relative mb-3">
+                        <img
+                          src={screenshotPreview}
+                          alt="Payment Receipt Preview"
+                          className="max-h-56 max-w-full rounded-2xl border-2 border-emerald-400 shadow-2xl object-contain bg-black/70 p-1"
+                        />
+                        <div className="absolute top-3 right-3 bg-emerald-500 text-[#05170f] px-3 py-1 rounded-full text-xs font-black flex items-center gap-1.5 shadow-xl">
+                          <CheckCircle2 className="w-4 h-4 text-[#05170f]" />
+                          <span>Screenshot Attached ✓</span>
+                        </div>
+                      </div>
 
-                  <div className="flex items-center gap-2 text-xs text-emerald-300 font-medium mb-3 bg-[#04140d] px-3.5 py-2 rounded-xl border border-emerald-500/40 shadow-inner">
-                    <FileCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span className="truncate max-w-xs font-semibold">{screenshotName || 'Payment_Screenshot.png'}</span>
-                  </div>
+                      <div className="flex items-center gap-2 text-xs text-emerald-300 font-medium mb-3 bg-[#04140d] px-3.5 py-2 rounded-xl border border-emerald-500/40 shadow-inner">
+                        <FileCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span className="truncate max-w-xs font-semibold">{screenshotName || 'Payment_Screenshot.png'}</span>
+                      </div>
 
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="cursor-pointer text-xs sm:text-sm text-[#fae69e] hover:text-white bg-[#0f3d27] border border-[#dfba5d]/50 hover:border-[#dfba5d] py-1.5 px-4 rounded-xl font-bold transition-all shadow active:scale-95"
+                      >
+                        🔄 Change / Upload Different Screenshot
+                      </button>
+                    </div>
+                  )}
+
+                  {screenshotError && (
+                    <p className="text-red-400 text-xs mt-2.5 font-bold text-center bg-red-950/50 p-2 rounded-lg border border-red-500/30">
+                      {screenshotError}
+                    </p>
+                  )}
+                </div>
+
+                {/* Final Button: Locked until screenshot uploaded, then confirms order */}
+                <div className="pt-2 border-t border-[#c59b27]/30">
                   <button
                     type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="cursor-pointer text-xs sm:text-sm text-[#fae69e] hover:text-white bg-[#0f3d27] border border-[#dfba5d]/50 hover:border-[#dfba5d] py-1.5 px-4 rounded-xl font-bold transition-all shadow active:scale-95"
+                    id="confirm-pay-now-btn"
+                    disabled={!screenshotPreview}
+                    onClick={screenshotPreview ? processPayment : undefined}
+                    className={`w-full py-4 px-6 rounded-2xl flex items-center justify-center gap-2.5 transition-all text-base sm:text-lg font-black shadow-2xl ${
+                      screenshotPreview
+                        ? 'cursor-pointer bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 hover:brightness-110 active:scale-[0.99] text-white animate-pulse ring-4 ring-emerald-400/30'
+                        : 'cursor-not-allowed bg-[#132219] text-gray-400 border border-white/10 opacity-70'
+                    }`}
                   >
-                    🔄 Change / Upload Different Screenshot
+                    {screenshotPreview ? (
+                      <>
+                        <CheckCircle2 className="w-6 h-6 text-white" />
+                        <span>Confirm Order (Paid ₹{totalAmount}) →</span>
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-5 h-5 text-gray-400" />
+                        <span>Please Upload Screenshot of Payment</span>
+                      </>
+                    )}
                   </button>
+
+                  {!screenshotPreview ? (
+                    <p className="text-center text-xs text-amber-300/90 mt-2.5 flex items-center justify-center gap-1.5 font-medium">
+                      <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>कृपया ऊपर दिए गए बॉक्स में पेमेंट का स्क्रीनशॉट अपलोड करें ताकि कन्फर्म बटन अनलॉक हो सके।</span>
+                    </p>
+                  ) : (
+                    <p className="text-center text-xs text-emerald-400 mt-2.5 flex items-center justify-center gap-1.5 font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>स्क्रीनशॉट अटैच हो चुका है! अपना ऑर्डर कन्फर्म करने के लिए ऊपर दिए गए हरे बटन पर क्लिक करें।</span>
+                    </p>
+                  )}
+
+                  <p className="text-center text-[11px] text-gray-400 mt-2 flex items-center justify-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#10b981]" />
+                    <span>100% Safe &amp; Secure • Immediate order confirmation and tracking SMS will be sent</span>
+                  </p>
                 </div>
-              )}
-
-              {screenshotError && (
-                <p className="text-red-400 text-xs mt-2.5 font-bold text-center bg-red-950/50 p-2 rounded-lg border border-red-500/30">
-                  {screenshotError}
-                </p>
-              )}
-            </div>
-
-            {/* Confirm Order Action Button */}
-            <div className="pt-2 border-t border-[#c59b27]/30">
-              <button
-                type="button"
-                id="confirm-pay-now-btn"
-                disabled={!screenshotPreview}
-                onClick={screenshotPreview ? processPayment : undefined}
-                className={`w-full py-4 px-6 rounded-2xl flex items-center justify-center gap-2.5 transition-all text-base sm:text-lg font-black shadow-2xl ${
-                  screenshotPreview
-                    ? 'cursor-pointer bg-gradient-to-r from-[#dfba5d] via-[#fae69e] to-[#c59b27] hover:brightness-110 active:scale-[0.99] text-[#082116] animate-pulse ring-4 ring-[#dfba5d]/30'
-                    : 'cursor-not-allowed bg-[#132219] text-gray-400 border border-white/10 opacity-70'
-                }`}
-              >
-                {screenshotPreview ? (
-                  <>
-                    <CheckCircle2 className="w-6 h-6 text-[#082116]" />
-                    <span>Confirm Order (Paid ₹{totalAmount}) →</span>
-                  </>
-                ) : (
-                  <>
-                    <Lock className="w-5 h-5 text-gray-400" />
-                    <span>Please Upload Payment Screenshot First</span>
-                  </>
-                )}
-              </button>
-
-              {!screenshotPreview ? (
-                <p className="text-center text-xs text-amber-300/90 mt-2.5 flex items-center justify-center gap-1.5 font-medium">
-                  <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span>Please pay via PhonePe / UPI and upload the screenshot above to unlock the Confirm Order button.</span>
-                </p>
-              ) : (
-                <p className="text-center text-xs text-emerald-400 mt-2.5 flex items-center justify-center gap-1.5 font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>Payment screenshot attached! Click above to confirm and book your order now.</span>
-                </p>
-              )}
-
-              <p className="text-center text-[11px] text-gray-400 mt-2 flex items-center justify-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#10b981]" />
-                <span>100% Safe &amp; Secure • Immediate order confirmation and tracking SMS will be sent</span>
-              </p>
-            </div>
+              </div>
+            )}
           </div>
         )}
         </div>
@@ -1277,6 +1353,7 @@ export const OnlinePaymentModal: React.FC<OnlinePaymentModalProps> = ({
                 type="button"
                 onClick={() => {
                   setDesktopModalApp(null);
+                  setHasVerificationFailed(true);
                   fileInputRef.current?.click();
                 }}
                 className="cursor-pointer w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#dfba5d] via-[#fae69e] to-[#c59b27] text-[#05170f] font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg hover:brightness-110 active:scale-98 transition-all"
