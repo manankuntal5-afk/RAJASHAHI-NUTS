@@ -44,6 +44,18 @@ export interface OrderAddress {
 
 export type PaymentMethod = 'upi' | 'qr' | 'card' | 'netbanking';
 
+export type ActivePage =
+  | 'home'
+  | 'privacy-policy'
+  | 'terms-conditions'
+  | 'return-refund-policy'
+  | 'shipping-policy'
+  | 'cancellation-policy'
+  | 'payment-policy'
+  | 'contact-us'
+  | 'about-us'
+  | 'faq';
+
 export interface OrderConfirmation {
   orderId: string;
   transactionId: string;
