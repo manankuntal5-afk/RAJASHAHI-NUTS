@@ -20,7 +20,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Gujarat",
     "rating": 5,
     "date": "Yesterday",
-    "comment": "Paid online smoothly via UPI and received delivery in 3 days. Clean, airtight packaging and fresh crunch in pistachios. Excellent value for money, ordered 2 more packs for my family!",
+    "comment": "Paid online smoothly via UPI and received delivery parcel in 3 days. Clean, airtight cardboard delivery box packaging. Pistachios crunch is so fresh and delicious. Ordered 2 more packs for family!",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop"
   },
@@ -31,7 +31,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Uttar Pradesh",
     "rating": 5,
     "date": "2 days ago",
-    "comment": "Unbelievable quality at this promotional price point. The raisins are naturally sweet and cashews are large whole kernels. Truly commendable initiative by Rajshahi Nuts.",
+    "comment": "Kaju packet open karke dekha to ek bhi toota hua nahi nikla, pure jumbo white kernels. Naturally sweet golden kishmish as well. Truly commendable initiative by Rajshahi Nuts.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop"
   },
@@ -42,7 +42,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Madhya Pradesh",
     "rating": 5,
     "date": "3 days ago",
-    "comment": "₹265 me 4 kg pure dry fruits sach me dil khush ho gaya. Bachho ko badam aur pista bohot pasand aaye. Prompt tracking and safe delivery. Thank you Rajshahi Nuts!",
+    "comment": "₹265 me 4 kg pure dry fruits sach me dil khush ho gaya. Delivery box was sealed properly with tape. All 4 packets (kaju, badam, pista, kishmish) were fresh. Thank you Rajshahi Nuts!",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop"
   },
@@ -53,7 +53,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "West Bengal",
     "rating": 5,
     "date": "Yesterday",
-    "comment": "Delivery boy ne respectfully parcel diya. Sabhi 4 packets ka vajan pura 1-1 kg tha. Bahut imandar brand hai.",
+    "comment": "Delivery boy ne respectfully parcel diya. Badam ka size bada hai aur taste me kafi crunchy aur fresh hai. Subah bhigo kar khate hain. Bahut imandar brand hai.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=150&auto=format&fit=crop"
   },
@@ -64,7 +64,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Maharashtra",
     "rating": 5,
     "date": "Today",
-    "comment": "Maine apne mummy papa ke liye mangwaya tha, packaging airtight aayi thi aur taste bahut badhiya hai.",
+    "comment": "Maine apne mummy papa ke liye mangwaya tha. Kishmish ekdum saaf aur golden hai, koi kankar ya mitti nahi. Taste naturally sweet hai, packaging airtight aayi thi.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=150&auto=format&fit=crop"
   },
@@ -75,7 +75,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Uttar Pradesh",
     "rating": 5,
     "date": "2 days ago",
-    "comment": "Meri taraf se Rajshahi Nuts ko bahut badhai. Aise hi honest pricing aur quality banaye rakhein.",
+    "comment": "Pista quality is top class! Shells are naturally cracked and green nuts are roasted nicely with light salt. Meri taraf se Rajshahi Nuts ko bahut badhai.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=150&auto=format&fit=crop"
   },
@@ -86,7 +86,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Gujarat",
     "rating": 5,
     "date": "3 weeks ago",
-    "comment": "₹265 me 4 KG dry fruits sach me kamaal ka deal hai! Kaju aur badam dono ekdum crunchy aur fresh nikle.",
+    "comment": "Delivery box unbox kiya to sabhi 4 packets 1-1 kg ke alag alag zip lock pouches me nikle. Kaju aur badam dono ekdum crunchy aur fresh nikle. ₹265 me kamaal ka deal hai!",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=150&auto=format&fit=crop"
   },
@@ -97,7 +97,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Madhya Pradesh",
     "rating": 5,
     "date": "3 weeks ago",
-    "comment": "Itna sasta aur itna accha combo maine pehle kabhi nahi dekha. Sabhi friends ko link share kar diya hai.",
+    "comment": "Itna sasta aur itna accha combo maine pehle kabhi nahi dekha. Kaju ka kernel size bohot bada hai, pure white texture. Sabhi friends ko link share kar diya hai.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&auto=format&fit=crop"
   },
@@ -108,7 +108,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Rajasthan",
     "rating": 5,
     "date": "1 month ago",
-    "comment": "Subah running ke baad badam aur kaju khata hu. Energy level badhiya rehta hai. Bohot accha combo hai.",
+    "comment": "Subah running ke baad badam aur kaju khata hu. Phone camera se pista aur kaju packets ki photo click karke dali hai. Energy level badhiya rehta hai. Bohot accha combo hai.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=150&auto=format&fit=crop"
   },
@@ -119,7 +119,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Jharkhand",
     "rating": 5,
     "date": "1 week ago",
-    "comment": "Price kam hai lekin quality me koi samjhauta nahi kiya hai. Truly impressed with this honest brand.",
+    "comment": "Courier delivery box safely received at home. Badam pouches were tightly sealed with rich natural oil and crunch. Price kam hai lekin quality me koi samjhauta nahi kiya.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?q=80&w=150&auto=format&fit=crop"
   },
@@ -130,7 +130,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Rajasthan",
     "rating": 5,
     "date": "1 month ago",
-    "comment": "Bina kisi jhanjhat ke parcel ghar tak pahunch gaya. Packaging aur product dono A1 grade hain!",
+    "comment": "Bina kisi jhanjhat ke parcel ghar tak pahunch gaya. Kishmish pouch is very clean and long golden seedless. Packaging aur product dono A1 grade hain!",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop"
   },
@@ -141,7 +141,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Punjab",
     "rating": 5,
     "date": "3 weeks ago",
-    "comment": "Delivery boy ne respectfully parcel diya. Sabhi 4 packets ka vajan pura 1-1 kg tha. Bahut imandar brand hai.",
+    "comment": "Parcel box on-time aaya. Delivery boy ne safely hand over kiya. Sabhi 4 packets ka vajan pura 1-1 kg tha. Kaju packet ka weight aur quality dono perfect hai. Bahut imandar brand hai.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop"
   },
@@ -152,7 +152,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Chhattisgarh",
     "rating": 5,
     "date": "5 days ago",
-    "comment": "Bhai paisa vasool product hai! Itne kam price me 1-1 kg kaju, badam, pista aur kishmish milna unbelievable hai.",
+    "comment": "Bhai paisa vasool product hai! All 4 packets (1 kg kaju, 1 kg badam, 1 kg pista, 1 kg kishmish) unboxing karke real camera photo lagai hai. Unbelievable deal at ₹265!",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop"
   },
@@ -163,7 +163,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Maharashtra",
     "rating": 5,
     "date": "4 days ago",
-    "comment": "Ordered for my elderly parents. They loved the natural sweetness of raisins and fresh California almonds.",
+    "comment": "Ordered for my elderly parents. Phone camera se badam packet ki picture click ki hai. They loved the fresh California almonds and sweet golden raisins.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop"
   },
@@ -174,7 +174,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Punjab",
     "rating": 5,
     "date": "1 week ago",
-    "comment": "Ghar me sabko kaju aur badam bahut pasand aaye. Roz subah doodh ke saath khate hain. Dhanyawad Rajshahi Nuts!",
+    "comment": "Ghar me sabko kaju aur pista bahut pasand aaye. Pista roasting ekdum crispy hai with light sea salt. Roz subah milk ke saath khate hain. Dhanyawad Rajshahi Nuts!",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=150&auto=format&fit=crop"
   },
@@ -185,7 +185,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Uttar Pradesh",
     "rating": 5,
     "date": "2 weeks ago",
-    "comment": "Packaging aur tracking dono bohot smooth tha. Badam ka oil content aur crunch dono zabardast hai.",
+    "comment": "Packaging aur tracking dono bohot smooth tha. Golden kishmish aur fresh badam received in sealed condition. Taste aur crunch dono zabardast hai.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=150&auto=format&fit=crop"
   },
@@ -196,7 +196,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Chhattisgarh",
     "rating": 5,
     "date": "2 days ago",
-    "comment": "Unbelievable quality at this promotional price of ₹265. Almonds are crunchy and cashews are whole kernels.",
+    "comment": "Delivered in sturdy corrugated courier box. Cashews are jumbo whole nuts, no broken pieces. Unbelievable quality at this promotional price of ₹265.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=150&auto=format&fit=crop"
   },
@@ -207,7 +207,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Gujarat",
     "rating": 5,
     "date": "1 week ago",
-    "comment": "Itna sasta aur itna accha combo maine pehle kabhi nahi dekha. Sabhi friends ko link share kar diya hai.",
+    "comment": "Mobile phone se click karke badam packet ki real photo share kar raha hu. Badam crunch is amazing with high natural oils. Sabhi friends ko link de diya hai.",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=150&auto=format&fit=crop"
   },
@@ -218,7 +218,7 @@ export const ALL_REVIEWS_DATA: ReviewItem[] = [
     "state": "Punjab",
     "rating": 5,
     "date": "Yesterday",
-    "comment": "Price kam hai lekin quality me koi samjhauta nahi kiya hai. Truly impressed with this honest brand.",
+    "comment": "Parcel box securely packed tha with safety tape. Pista and kaju packets inside are fresh and crunchy. Honest brand with genuine 4 kg delivery at ₹265!",
     "verified": true,
     "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=150&auto=format&fit=crop"
   },

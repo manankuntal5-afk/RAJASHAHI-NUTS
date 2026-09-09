@@ -1,5 +1,6 @@
 import React, { useState, useId } from 'react';
 import { REVIEWS_DATA } from '../data/productData';
+import { ReviewItem } from '../types';
 import {
   Star,
   CheckCircle,
@@ -67,7 +68,7 @@ export const ReviewsSection: React.FC = () => {
   const startIndex = currentPage * REVIEWS_PER_PAGE;
   const endIndex = Math.min(startIndex + REVIEWS_PER_PAGE, totalReviews);
   const currentReviews = React.useMemo(() => {
-    const list = [];
+    const list: ReviewItem[] = [];
     for (let i = startIndex; i < endIndex; i++) {
       const base = REVIEWS_DATA[i % REVIEWS_DATA.length];
       list.push({
